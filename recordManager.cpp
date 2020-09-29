@@ -15,7 +15,7 @@ struct Date{
 };
 struct Address{
     int houseNum;
-    char woreda[2];
+    char woreda[3];
     string city;
 };
 struct Student{
@@ -23,7 +23,7 @@ struct Student{
     int age,grade;
     char section;
     Address address;
-    Date admition;
+    Date admission;
 };
 struct Faculty{
     string name, job;
@@ -46,6 +46,8 @@ int * searchData(Student students[]);
 int * searchData(Faculty faculties[]);
 Date inputDate();
 Address inputAddress();
+void printDate(Date day);
+void printAddress(Address address);
 //void sort(Student students[], Faculty faculties[]);
 void deconstruct(Student students[], Faculty faculties[]);
 
@@ -223,7 +225,7 @@ void insertDataStudent(Student students[]){
         cout<<"Address: "<<endl;
         students[i].address = inputAddress();
         cout<<"Date of Employment: "<<endl;
-        students[i].admition = inputDate();
+        students[i].admission = inputDate();
     }
 }
 
@@ -263,7 +265,7 @@ void editDataStudent(Student students[] ,int index){
     cout<<"New Address: "<<endl;
     students[index].address = inputAddress();
     cout<<"New Date of Employment: "<<endl;
-    students[index].admition = inputDate();
+    students[index].admission = inputDate();
 }
 void printFaculty(Faculty faculties[]){
     for(int i = 0; i < INDEX[0]; ++i){
@@ -271,6 +273,8 @@ void printFaculty(Faculty faculties[]){
         cout<<"\tName: "<<faculties[i].name<<endl;
         cout<<"\tJob Desc: "<<faculties[i].job<<endl;
         cout<<"\tAge: "<<faculties[i].age<<endl;
+        cout<<"\tAdmission Date: "; printDate(faculties[i].employmentDate);
+        cout<<"\tAddress: "; printAddress(faculties[i].address);
     }
 }
 void printStudent(Student students[]){
@@ -280,6 +284,8 @@ void printStudent(Student students[]){
         cout<<"\tAge: "<<students[i].age<<endl;
         cout<<"\tGrade: "<<students[i].grade<<endl;
         cout<<"\tSection: "<<students[i].section<<endl;
+        cout<<"\tAdmission Date: "; printDate(students[i].admission);
+        cout<<"\tAddress: "; printAddress(students[i].address);
     }
 }
 Date inputDate(){
@@ -306,4 +312,10 @@ Address inputAddress(){
     cin>>address.city;
 
     return address;
+}
+void printDate(Date day){
+    cout<<day.day<<"/"<<day.month<<"/"<<day.year<<endl;
+}
+void printAddress(Address address){
+    cout<<"House No.: "<<address.houseNum<<", "<<"Woreda: "<<address.woreda<<", "<<"City: "<<address.city<<endl;
 }
