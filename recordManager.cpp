@@ -1,4 +1,4 @@
-//TODO: Beautify the printing and do things in the main func also clarify and add comments if nessecary to the other functions.
+// Imports 
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -22,14 +22,14 @@ struct Address{
     char woreda[3], city[3], houseNum[4];
 };
 struct Student{
-    char firstName[20] , lastName[20];
+    char firstName[20], lastName[20];
     int age,grade;
     char section;
     Address address;
     Date admission;
 };
 struct Faculty{
-    char firstName[20] , lastName[20] , job[20] ;
+    char firstName[20], lastName[20], job[20] ;
     int age;
     Address address;
     Date employmentDate;
@@ -37,24 +37,31 @@ struct Faculty{
 
 // Function prototypes
 void construct(Student students[], Faculty faculties[]);
+
 void insertDataFaculty(Faculty faculties[]);
 void insertDataStudent(Student students[]);
+Date inputDate();
+Address inputAddress();
 void removeData(Faculty faculties[] ,int index);
 void removeData(Student students[] ,int index);
 void editDataFaculty(Faculty faculties[] ,int index);
 void editDataStudent(Student students[] ,int index);
-void printFaculty(Faculty faculties[]);
-void printStudent(Student students[]);
+// Haven't done it but thinking of it storing array of the results and then printing them. 
+// Might or not return an array maybe make it void. 
 int * searchData(Student students[]);
 int * searchData(Faculty faculties[]);
-Date inputDate();
-Address inputAddress();
+// Even if the INDEX is global we need a local one inorder to use this for the search function too.
+void printFaculty(Faculty faculties[], int index);
+void printStudent(Student students[], int index);
 void printDate(Date day);
 void printAddress(Address address);
 // Couldn't overload or template the function so needed two different ones.
-// Used to compare name for the sort algorithm that was included with <algorithm>
+// Used to compare name for the sort algorithm that was included with <algorithm>.
+// It reteurn true or false depending on the names and passes it to the
+// sort func which is found inside the <algorithm> import.
 bool compareTwoNamesStu(Student stu1, Student stu2);
 bool compareTwoNamesFac(Faculty fac1, Faculty fac2);
+
 void deconstruct(Student students[], Faculty faculties[]);
 
 int main(){
@@ -68,7 +75,7 @@ int main(){
         cout<<"1. Input Data."<<endl;
         cout<<"2. Edit Data."<<endl;
         cout<<"3. Remove Data."<<endl;
-        cout<<"4. Search Data."<<endl;
+        cout<<"4. Print Data."<<endl;
         cin>>choice;
 
         switch(choice){
@@ -124,9 +131,9 @@ int main(){
                 cout<<"2. Print Student Data."<<endl;    
                 cin>>subChoice;
                 if(subChoice == 1){
-                    printFaculty(faculties);
+                    printFaculty(faculties, INDEX[0]);
                 }else if(subChoice == 2){
-                    printStudent(students);
+                    printStudent(students, INDEX[1]);
                 }else{
                     cout<<"Incorrect choice.";
                 }
@@ -173,9 +180,10 @@ void construct(Student students[], Faculty faculties[]){
 }
 
 void deconstruct(Student students[], Faculty faculties[]){
+    // I don't think this is nessecary since we already sort when data inputed.
     // Sorting the names before saving
-    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
-    sort(students, students + INDEX[1], compareTwoNamesStu);
+    //sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
+    //sort(students, students + INDEX[1], compareTwoNamesStu);
 
     // Save data to students file
     ofstream stuFile(STU_FILE, ios::binary | ios::trunc);
@@ -250,82 +258,6 @@ void insertDataStudent(Student students[]){
     sort(students, students + INDEX[1], compareTwoNamesStu);
 }
 
-void removeData(Faculty faculties[] ,int index){
-    for(int i = index; i < INDEX[0]; ++i){
-        faculties[i] = faculties[i + 1];
-    }
-    INDEX[0]--;
-}
-
-void removeData(Student students[] ,int index){
-    for(int i = index; i < INDEX[1]; ++i){
-        students[i] = students[i + 1];
-    }
-    INDEX[1]--;
-}
-
-void editDataFaculty(Faculty faculties[] ,int index){
-    cout<<"New Name: ";
-    cin>>faculties[index].firstName;
-    cout<<"New Job Desc: ";
-    cin>>faculties[index].job;
-    cout<<"New Age: ";
-    cin>>faculties[index].age;
-    cout<<"New Address: "<<endl;
-    faculties[index].address = inputAddress();
-    cout<<"New Date of Employment: "<<endl;
-    faculties[index].employmentDate = inputDate();
-    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
-}
-
-void editDataStudent(Student students[] ,int index){
-    cout<<"New Name: ";
-    cin>>students[index].firstName;
-    cout<<"New Age: ";
-    cin>>students[index].age;
-    cout<<"New Grade: ";
-    cin>>students[index].grade;
-    cout<<"New Section: ";
-    cin>>students[index].section;
-    cout<<"New Address: "<<endl;
-    students[index].address = inputAddress();
-    cout<<"New Date of Employment: "<<endl;
-    students[index].admission = inputDate();
-    sort(students, students + INDEX[1], compareTwoNamesStu);
-}
-
-void printFaculty(Faculty faculties[]){
-    for(int i = 0; i < INDEX[0]; ++i){
-        cout<<"Faculty No. "<<i + 1<<endl;
-        cout<<"\tName: "<<faculties[i].firstName<<endl;
-        cout<<"\tJob Desc: "<<faculties[i].job<<endl;
-        cout<<"\tAge: "<<faculties[i].age<<endl;
-        cout<<"\tAdmission Date: "; printDate(faculties[i].employmentDate);
-        cout<<"\tAddress: "; printAddress(faculties[i].address);
-    }
-}
-
-void printStudent(Student students[]){
-    string name;
-    cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
-    cout<<"|"<<setw(4)<<"No. "<<"|"<<setw(42)<<left<<"Name"<<"|"<<setw(3)<<"Age"<<"|"<<setw(5)<<"Grade"<<"|"<<setw(3)<<"Sec"<<"|"
-        <<setw(9)<<"House No."<<"|"<<setw(6)<<"Woreda"<<"|"<<setw(4)<<"City"<<"|"<<setw(10)<<"Addmisson"<<"|"<<endl;
-    cout<<"|----+------------------------------------------+---+-----+---+---------+------+----+----------|"<<endl;
-    for(int i = 0; i < INDEX[1]; ++i){
-        name = (string)students[i].firstName + " " + (string)students[i].lastName;
-        cout<<"|"<<setw(4)<<i + 1<<"|";
-        cout<<setw(42)<<name<<"|";
-        cout<<setw(3)<<students[i].age<<"|";
-        cout<<setw(5)<<students[i].grade<<"|";
-        cout<<setw(3)<<students[i].section<<"|";
-        printAddress(students[i].address);
-        printDate(students[i].admission);
-        cout<<endl;
-        cout<<"|----+------------------------------------------+---+-----+---+---------+------+----+----------|"<<endl;
-    }
-    cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
-}
-
 Date inputDate(){
     Date day;
     do{
@@ -351,6 +283,95 @@ Address inputAddress(){
 
     return address;
 }
+
+void removeData(Faculty faculties[] ,int index){
+    for(int i = index; i < INDEX[0]; ++i){
+        faculties[i] = faculties[i + 1];
+    }
+    INDEX[0]--;
+}
+
+void removeData(Student students[] ,int index){
+    for(int i = index; i < INDEX[1]; ++i){
+        students[i] = students[i + 1];
+    }
+    INDEX[1]--;
+}
+
+void editDataFaculty(Faculty faculties[] ,int index){
+    index--;
+    cout<<"New First Name: ";
+    cin>>faculties[index].firstName;
+    cout<<"New Last Name: ";
+    cin>>faculties[index].lastName;
+    cout<<"New Job Desc: ";
+    cin>>faculties[index].job;
+    cout<<"New Age: ";
+    cin>>faculties[index].age;
+    cout<<"New Address: "<<endl;
+    faculties[index].address = inputAddress();
+    cout<<"New Date of Employment: "<<endl;
+    faculties[index].employmentDate = inputDate();
+    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
+}
+
+void editDataStudent(Student students[] ,int index){
+    cout<<"New First Name: ";
+    cin>>students[index].firstName;
+    cout<<"New Last Name: ";
+    cin>>students[index].lastName;
+    cout<<"New Age: ";
+    cin>>students[index].age;
+    cout<<"New Grade: ";
+    cin>>students[index].grade;
+    cout<<"New Section: ";
+    cin>>students[index].section;
+    cout<<"New Address: "<<endl;
+    students[index].address = inputAddress();
+    cout<<"New Date of Employment: "<<endl;
+    students[index].admission = inputDate();
+    sort(students, students + INDEX[1], compareTwoNamesStu);
+}
+
+void printFaculty(Faculty faculties[], int index){ 
+    string name;
+    cout<<"+-----------------------------------------------------------------------------------------------+"<<endl;
+    cout<<"|"<<setw(4)<<"no. "<<"|"<<setw(42)<<left<<"name"<<"|"<<setw(3)<<"age"<<"|"<<setw(10)<<"job desc"<<"|"
+        <<setw(9)<<"house no."<<"|"<<setw(6)<<"woreda"<<"|"<<setw(4)<<"city"<<"|"<<setw(10)<<"addmisson"<<"|"<<endl;
+    cout<<"|----+------------------------------------------+---+----------+---------+------+----+----------|"<<endl;
+    for(int i = 0; i < index; ++i){
+        name = (string)faculties[i].firstName + " " + (string)faculties[i].lastName;
+        cout<<"|"<<setw(4)<<i + 1<<"|";
+        cout<<setw(42)<<name<<"|";
+        cout<<setw(3)<<faculties[i].age<<"|";
+        cout<<setw(10)<<faculties[i].job<<"|";
+        printAddress(faculties[i].address);
+        printDate(faculties[i].employmentDate);
+        cout<<endl;
+        cout<<"+----+------------------------------------------+---+----------+---------+------+----+----------+"<<endl;
+    }
+}
+
+void printStudent(Student students[], int index){
+    string name;
+    cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
+    cout<<"|"<<setw(4)<<"No. "<<"|"<<setw(42)<<left<<"Name"<<"|"<<setw(3)<<"Age"<<"|"<<setw(5)<<"Grade"<<"|"<<setw(3)<<"Sec"<<"|"
+        <<setw(9)<<"House No."<<"|"<<setw(6)<<"Woreda"<<"|"<<setw(4)<<"City"<<"|"<<setw(10)<<"Addmisson"<<"|"<<endl;
+    cout<<"|----+------------------------------------------+---+-----+---+---------+------+----+----------|"<<endl;
+    for(int i = 0; i < index; ++i){
+        name = (string)students[i].firstName + " " + (string)students[i].lastName;
+        cout<<"|"<<setw(4)<<i + 1<<"|";
+        cout<<setw(42)<<name<<"|";
+        cout<<setw(3)<<students[i].age<<"|";
+        cout<<setw(5)<<students[i].grade<<"|";
+        cout<<setw(3)<<students[i].section<<"|";
+        printAddress(students[i].address);
+        printDate(students[i].admission);
+        cout<<endl;
+        cout<<"+----+------------------------------------------+---+-----+---+---------+------+----+----------+"<<endl;
+    }
+}
+
 
 void printDate(Date day){
     cout<<setw(2)<<day.day<<"/"<<setw(2)<<day.month<<"/"<<setw(4)<<day.year<<"|";
