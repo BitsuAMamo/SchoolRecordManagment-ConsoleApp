@@ -2,8 +2,11 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
+#include <cstring>
 
 using namespace std;
+
 // Constants
 const int MAX_REC = 500;
 const char * STU_FILE = "students.bin";
@@ -48,10 +51,14 @@ Date inputDate();
 Address inputAddress();
 void printDate(Date day);
 void printAddress(Address address);
-//void sort(Student students[], Faculty faculties[]);
+// Couldn't overload or template the function so needed two different ones.
+// Used to compare name for the sort algorithm that was included with <algorithm>
+bool compareTwoNamesStu(Student stu1, Student stu2);
+bool compareTwoNamesFac(Faculty fac1, Faculty fac2);
 void deconstruct(Student students[], Faculty faculties[]);
 
 int main(){
+
     Student students[MAX_REC];
     Faculty faculties[MAX_REC];
     int choice, subChoice, index;
@@ -63,6 +70,7 @@ int main(){
         cout<<"3. Remove Data."<<endl;
         cout<<"4. Search Data."<<endl;
         cin>>choice;
+
         switch(choice){
             case 1:
                 cout<<"1. Accept Faculty Data."<<endl;    
@@ -76,6 +84,7 @@ int main(){
                     cout<<"Incorrect choice.";
                 }
                 break;
+
             case 2:
                 cout<<"1. Edit Faculty Data."<<endl;    
                 cout<<"2. Edit Student Data."<<endl;    
@@ -92,6 +101,7 @@ int main(){
                     cout<<"Incorrect choice.";
                 }
                 break;
+
             case 3:
                 cout<<"1. Delete Faculty Data."<<endl;    
                 cout<<"2. Delete Student Data."<<endl;    
@@ -108,6 +118,7 @@ int main(){
                     cout<<"Incorrect choice.";
                 }
                 break;
+
             case 4:
                 cout<<"1. Print Faculty Data."<<endl;    
                 cout<<"2. Print Student Data."<<endl;    
@@ -120,11 +131,11 @@ int main(){
                     cout<<"Incorrect choice.";
                 }
                 break;
+
             default:
                 break;
         }
     }while(choice != 0);
-
 
     deconstruct(students, faculties);
 
@@ -162,6 +173,10 @@ void construct(Student students[], Faculty faculties[]){
 }
 
 void deconstruct(Student students[], Faculty faculties[]){
+    // Sorting the names before saving
+    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
+    sort(students, students + INDEX[1], compareTwoNamesStu);
+
     // Save data to students file
     ofstream stuFile(STU_FILE, ios::binary | ios::trunc);
     for(int i = 0; i < INDEX[1]; ++i){
@@ -207,6 +222,7 @@ void insertDataFaculty(Faculty faculties[]){
         cout<<"Date of Employment: "<<endl;
         faculties[i].employmentDate = inputDate();
     }
+    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
 }
 
 void insertDataStudent(Student students[]){
@@ -231,6 +247,7 @@ void insertDataStudent(Student students[]){
         cout<<"Date of Employment: "<<endl;
         students[i].admission = inputDate();
     }
+    sort(students, students + INDEX[1], compareTwoNamesStu);
 }
 
 void removeData(Faculty faculties[] ,int index){
@@ -239,12 +256,14 @@ void removeData(Faculty faculties[] ,int index){
     }
     INDEX[0]--;
 }
+
 void removeData(Student students[] ,int index){
     for(int i = index; i < INDEX[1]; ++i){
         students[i] = students[i + 1];
     }
     INDEX[1]--;
 }
+
 void editDataFaculty(Faculty faculties[] ,int index){
     cout<<"New Name: ";
     cin>>faculties[index].firstName;
@@ -256,7 +275,9 @@ void editDataFaculty(Faculty faculties[] ,int index){
     faculties[index].address = inputAddress();
     cout<<"New Date of Employment: "<<endl;
     faculties[index].employmentDate = inputDate();
+    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
 }
+
 void editDataStudent(Student students[] ,int index){
     cout<<"New Name: ";
     cin>>students[index].firstName;
@@ -270,7 +291,9 @@ void editDataStudent(Student students[] ,int index){
     students[index].address = inputAddress();
     cout<<"New Date of Employment: "<<endl;
     students[index].admission = inputDate();
+    sort(students, students + INDEX[1], compareTwoNamesStu);
 }
+
 void printFaculty(Faculty faculties[]){
     for(int i = 0; i < INDEX[0]; ++i){
         cout<<"Faculty No. "<<i + 1<<endl;
@@ -281,6 +304,7 @@ void printFaculty(Faculty faculties[]){
         cout<<"\tAddress: "; printAddress(faculties[i].address);
     }
 }
+
 void printStudent(Student students[]){
     string name;
     cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
@@ -301,6 +325,7 @@ void printStudent(Student students[]){
     }
     cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
 }
+
 Date inputDate(){
     Date day;
     do{
@@ -326,9 +351,25 @@ Address inputAddress(){
 
     return address;
 }
+
 void printDate(Date day){
     cout<<setw(2)<<day.day<<"/"<<setw(2)<<day.month<<"/"<<setw(4)<<day.year<<"|";
 }
+
 void printAddress(Address address){
     cout<<setw(9)<<address.houseNum<<"|"<<setw(6)<<address.woreda<<"|"<<setw(4)<<address.city<<"|";
+}
+
+bool compareTwoNamesStu(Student stu1, Student stu2){
+    if(stu1.firstName != stu2.firstName){
+        return (strcmp(stu1.firstName, stu2.firstName) < 0);
+    }
+    return (strcmp(stu1.lastName, stu2.lastName) < 0); 
+}
+
+bool compareTwoNamesFac(Faculty fac1, Faculty fac2){
+    if(fac1.firstName != fac2.firstName){
+        return (strcmp(fac1.firstName, fac2.firstName) < 0);
+    }
+    return (strcmp(fac1.lastName, fac2.lastName) < 0); 
 }
