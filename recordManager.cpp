@@ -6,7 +6,8 @@
 #include <cstring>
 
 using namespace std;
-
+// The sort function from algorithm take 3 parameters a fucntion that return true or false
+// based on the comparing mechnaism and the list and the end of the list.
 // Constants
 const int MAX_REC = 500;
 const char * STU_FILE = "students.bin";
@@ -24,7 +25,7 @@ struct Address{
 struct Student{
     char firstName[20], lastName[20];
     int age,grade;
-    char section;
+    char section[3];
     Address address;
     Date admission;
 };
@@ -37,32 +38,35 @@ struct Faculty{
 
 // Function prototypes
 void construct(Student students[], Faculty faculties[]);
+void deconstruct(Student students[], Faculty faculties[]);
 
+// Input of data.
 void insertDataFaculty(Faculty faculties[]);
 void insertDataStudent(Student students[]);
 Date inputDate();
 Address inputAddress();
+
+// Modification of data.
 void removeData(Faculty faculties[] ,int index);
 void removeData(Student students[] ,int index);
 void editDataFaculty(Faculty faculties[] ,int index);
 void editDataStudent(Student students[] ,int index);
-// Haven't done it but thinking of it storing array of the results and then printing them. 
-// Might or not return an array maybe make it void. 
-int * searchData(Student students[]);
-int * searchData(Faculty faculties[]);
+
+// Data searching.
+void searchData(Student students[]);
+void searchData(Faculty faculties[]);
+
 // Even if the INDEX is global we need a local one inorder to use this for the search function too.
 void printFaculty(Faculty faculties[], int index);
 void printStudent(Student students[], int index);
 void printDate(Date day);
 void printAddress(Address address);
+
 // Couldn't overload or template the function so needed two different ones.
-// Used to compare name for the sort algorithm that was included with <algorithm>.
-// It reteurn true or false depending on the names and passes it to the
-// sort func which is found inside the <algorithm> import.
+// Comparator function for the sort function.
 bool compareTwoNamesStu(Student stu1, Student stu2);
 bool compareTwoNamesFac(Faculty fac1, Faculty fac2);
 
-void deconstruct(Student students[], Faculty faculties[]);
 
 int main(){
 
@@ -76,6 +80,7 @@ int main(){
         cout<<"2. Edit Data."<<endl;
         cout<<"3. Remove Data."<<endl;
         cout<<"4. Print Data."<<endl;
+        cout<<"5. Search Data."<<endl;
         cin>>choice;
 
         switch(choice){
@@ -134,6 +139,19 @@ int main(){
                     printFaculty(faculties, INDEX[0]);
                 }else if(subChoice == 2){
                     printStudent(students, INDEX[1]);
+                }else{
+                    cout<<"Incorrect choice.";
+                }
+                break;
+
+            case 5:
+                cout<<"1. Search Faculty Data."<<endl;    
+                cout<<"2. Search Student Data."<<endl;    
+                cin>>subChoice;
+                if(subChoice == 1){
+                    searchData(faculties);
+                }else if(subChoice == 2){
+                    searchData(students);
                 }else{
                     cout<<"Incorrect choice.";
                 }
@@ -334,44 +352,55 @@ void editDataStudent(Student students[] ,int index){
 }
 
 void printFaculty(Faculty faculties[], int index){ 
-    string name;
-    cout<<"+-----------------------------------------------------------------------------------------------+"<<endl;
-    cout<<"|"<<setw(4)<<"no. "<<"|"<<setw(42)<<left<<"name"<<"|"<<setw(3)<<"age"<<"|"<<setw(10)<<"job desc"<<"|"
-        <<setw(9)<<"house no."<<"|"<<setw(6)<<"woreda"<<"|"<<setw(4)<<"city"<<"|"<<setw(10)<<"addmisson"<<"|"<<endl;
-    cout<<"|----+------------------------------------------+---+----------+---------+------+----+----------|"<<endl;
-    for(int i = 0; i < index; ++i){
-        name = (string)faculties[i].firstName + " " + (string)faculties[i].lastName;
-        cout<<"|"<<setw(4)<<i + 1<<"|";
-        cout<<setw(42)<<name<<"|";
-        cout<<setw(3)<<faculties[i].age<<"|";
-        cout<<setw(10)<<faculties[i].job<<"|";
-        printAddress(faculties[i].address);
-        printDate(faculties[i].employmentDate);
-        cout<<endl;
-        cout<<"+----+------------------------------------------+---+----------+---------+------+----+----------+"<<endl;
+    if(index != 0){
+        string name;
+        cout<<"+-----------------------------------------------------------------------------------------------+"<<endl;
+        cout<<"|"<<setw(4)<<"no. "<<"|"<<setw(42)<<left<<"name"<<"|"<<setw(3)<<"age"<<"|"<<setw(10)<<"job desc"<<"|"
+            <<setw(9)<<"house no."<<"|"<<setw(6)<<"woreda"<<"|"<<setw(4)<<"city"<<"|"<<setw(10)<<"addmisson"<<"|"<<endl;
+        cout<<"|----+------------------------------------------+---+----------+---------+------+----+----------|"<<endl;
+        for(int i = 0; i < index; ++i){
+            name = (string)faculties[i].firstName + " " + (string)faculties[i].lastName;
+            cout<<"|"<<setw(4)<<i + 1<<"|";
+            cout<<setw(42)<<name<<"|";
+            cout<<setw(3)<<faculties[i].age<<"|";
+            cout<<setw(10)<<faculties[i].job<<"|";
+            printAddress(faculties[i].address);
+            printDate(faculties[i].employmentDate);
+            cout<<endl;
+            cout<<"+----+------------------------------------------+---+----------+---------+------+----+----------+"<<endl;
+        }
+    }else{
+        cout<<"+------------------+"<<endl;
+        cout<<"|No Data Available!|"<<endl;
+        cout<<"+------------------+"<<endl;
     }
 }
 
 void printStudent(Student students[], int index){
-    string name;
-    cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
-    cout<<"|"<<setw(4)<<"No. "<<"|"<<setw(42)<<left<<"Name"<<"|"<<setw(3)<<"Age"<<"|"<<setw(5)<<"Grade"<<"|"<<setw(3)<<"Sec"<<"|"
-        <<setw(9)<<"House No."<<"|"<<setw(6)<<"Woreda"<<"|"<<setw(4)<<"City"<<"|"<<setw(10)<<"Addmisson"<<"|"<<endl;
-    cout<<"|----+------------------------------------------+---+-----+---+---------+------+----+----------|"<<endl;
-    for(int i = 0; i < index; ++i){
-        name = (string)students[i].firstName + " " + (string)students[i].lastName;
-        cout<<"|"<<setw(4)<<i + 1<<"|";
-        cout<<setw(42)<<name<<"|";
-        cout<<setw(3)<<students[i].age<<"|";
-        cout<<setw(5)<<students[i].grade<<"|";
-        cout<<setw(3)<<students[i].section<<"|";
-        printAddress(students[i].address);
-        printDate(students[i].admission);
-        cout<<endl;
-        cout<<"+----+------------------------------------------+---+-----+---+---------+------+----+----------+"<<endl;
+    if(index != 0){
+        string name;
+        cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
+        cout<<"|"<<setw(4)<<"No. "<<"|"<<setw(42)<<left<<"Name"<<"|"<<setw(3)<<"Age"<<"|"<<setw(5)<<"Grade"<<"|"<<setw(3)<<"Sec"<<"|"
+            <<setw(9)<<"House No."<<"|"<<setw(6)<<"Woreda"<<"|"<<setw(4)<<"City"<<"|"<<setw(10)<<"Addmisson"<<"|"<<endl;
+        cout<<"|----+------------------------------------------+---+-----+---+---------+------+----+----------|"<<endl;
+        for(int i = 0; i < index; ++i){
+            name = (string)students[i].firstName + " " + (string)students[i].lastName;
+            cout<<"|"<<setw(4)<<i + 1<<"|";
+            cout<<setw(42)<<name<<"|";
+            cout<<setw(3)<<students[i].age<<"|";
+            cout<<setw(5)<<students[i].grade<<"|";
+            cout<<setw(3)<<students[i].section<<"|";
+            printAddress(students[i].address);
+            printDate(students[i].admission);
+            cout<<endl;
+            cout<<"+----+------------------------------------------+---+-----+---+---------+------+----+----------+"<<endl;
+        }
+    }else{
+        cout<<"+------------------+"<<endl;
+        cout<<"|No Data Available!|"<<endl;
+        cout<<"+------------------+"<<endl;
     }
 }
-
 
 void printDate(Date day){
     cout<<setw(2)<<day.day<<"/"<<setw(2)<<day.month<<"/"<<setw(4)<<day.year<<"|";
@@ -381,16 +410,91 @@ void printAddress(Address address){
     cout<<setw(9)<<address.houseNum<<"|"<<setw(6)<<address.woreda<<"|"<<setw(4)<<address.city<<"|";
 }
 
+void searchData(Student students[]){
+    Student results[MAX_REC];
+    int counter  = 0, choice, target_grade;
+    char target_char[20];
+    cout<<"1. Search by name."<<endl;
+    cout<<"2. Search by grade."<<endl;
+    cout<<"3. Search by section."<<endl;
+    cin>>choice;
+    switch(choice){
+        case 1:
+            cout<<"Enter Name: ";
+            cin>>target_char;
+            for(int i = 0; i < INDEX[1];++i){
+                if(!strcmpi(target_char, students[i].firstName) || !strcmpi(target_char, students[i].lastName)){
+                    results[counter] = students[i];
+                    counter++;
+                }
+            }
+            break;
+        case 2:
+            cout<<"Enter Grade: ";
+            cin>>target_grade;
+            for(int i = 0; i < INDEX[1];++i){
+                if(target_grade == students[i].grade){
+                    results[counter] = students[i];
+                    counter++;
+                }
+            }
+            break;
+        case 3:
+            cout<<"Enter Section: ";
+            cin>>target_char;
+            for(int i = 0; i < INDEX[1];++i){
+                if(!strcmpi(target_char, students[i].section) || !strcmpi(target_char, students[i].section)){
+                    results[counter] = students[i];
+                    counter++;
+                }
+            }
+            break;
+    }
+    printStudent(results, counter);
+}
+
+void searchData(Faculty faculties[]){
+    Faculty results[MAX_REC];
+    int counter  = 0, choice;
+    char target_char[20];
+    cout<<"1. Search by name."<<endl;
+    cout<<"2. Search by job."<<endl;
+    cin>>choice;
+    switch(choice){
+        case 1:
+            cout<<"Enter Name: ";
+            cin>>target_char;
+            for(int i = 0; i < INDEX[1];++i){
+                if(!strcmpi(target_char, faculties[i].firstName) || !strcmpi(target_char, faculties[i].lastName)){
+                    results[counter] = faculties[i];
+                    counter++;
+                }
+            }
+            break;
+        case 2:
+            cout<<"Enter Job: ";
+            cin>>target_char;
+            for(int i = 0; i < INDEX[1];++i){
+                if(!strcmpi(target_char, faculties[i].job)){
+                    results[counter] = faculties[i];
+                    counter++;
+                }
+            }
+            break;
+    }
+    printFaculty(results, counter);
+}
+
 bool compareTwoNamesStu(Student stu1, Student stu2){
     if(stu1.firstName != stu2.firstName){
-        return (strcmp(stu1.firstName, stu2.firstName) < 0);
+        return (strcmpi(stu1.firstName, stu2.firstName) < 0);
     }
-    return (strcmp(stu1.lastName, stu2.lastName) < 0); 
+    return (strcmpi(stu1.lastName, stu2.lastName) < 0); 
 }
 
 bool compareTwoNamesFac(Faculty fac1, Faculty fac2){
     if(fac1.firstName != fac2.firstName){
-        return (strcmp(fac1.firstName, fac2.firstName) < 0);
+        return (strcmpi(fac1.firstName, fac2.firstName) < 0);
     }
-    return (strcmp(fac1.lastName, fac2.lastName) < 0); 
+    return (strcmpi(fac1.lastName, fac2.lastName) < 0); 
 }
