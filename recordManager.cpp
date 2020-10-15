@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <cstring>
+#include <stdlib.h>
 
 using namespace std;
 // The sort function from algorithm take 3 parameters a fucntion that return true or false
@@ -56,14 +57,15 @@ void editDataStudent(Student students[] ,int index);
 void searchData(Student students[]);
 void searchData(Faculty faculties[]);
 
+// Printing Data.
 // Even if the INDEX is global we need a local one inorder to use this for the search function too.
 void printFaculty(Faculty faculties[], int index);
 void printStudent(Student students[], int index);
 void printDate(Date day);
 void printAddress(Address address);
 
-// Couldn't overload or template the function so needed two different ones.
 // Comparator function for the sort function.
+// Couldn't overload or template the function so needed two different ones.
 bool compareTwoNamesStu(Student stu1, Student stu2);
 bool compareTwoNamesFac(Faculty fac1, Faculty fac2);
 
@@ -76,6 +78,7 @@ int main(){
     construct(students, faculties);
 
     do{
+        cout<<"0. Exit."<<endl;
         cout<<"1. Input Data."<<endl;
         cout<<"2. Edit Data."<<endl;
         cout<<"3. Remove Data."<<endl;
@@ -85,75 +88,119 @@ int main(){
 
         switch(choice){
             case 1:
+                system("cls");
+                cout<<"0. Go Back."<<endl;    
                 cout<<"1. Accept Faculty Data."<<endl;    
                 cout<<"2. Accept Student Data."<<endl;    
                 cin>>subChoice;
-                if(subChoice == 1){
-                    insertDataFaculty(faculties);
-                }else if(subChoice == 2){
-                    insertDataStudent(students);
-                }else{
-                    cout<<"Incorrect choice.";
+                switch(subChoice){
+                    case 0:
+                        break;
+                    case 1:
+                        insertDataFaculty(faculties);
+                        break;
+                    case 2:
+                        insertDataStudent(students);
+                        break;
+                    default:
+                        cout<<"Incorrect choice";
+                        break;
                 }
                 break;
 
             case 2:
+                system("cls");
+                cout<<"0. Go Back."<<endl;    
                 cout<<"1. Edit Faculty Data."<<endl;    
                 cout<<"2. Edit Student Data."<<endl;    
                 cin>>subChoice;
-                if(subChoice == 1){
-                    cout<<"Enter number: ";
-                    cin>>index;
-                    editDataFaculty(faculties, index);
-                }else if(subChoice == 2){
-                    cout<<"Enter number: ";
-                    cin>>index;
-                    editDataStudent(students, index);
-                }else{
-                    cout<<"Incorrect choice.";
+                switch(subChoice){
+                    case 0:
+                        break;
+                    case 1:
+                        printFaculty(faculties, INDEX[0]);
+                        cout<<"Enter number: ";
+                        cin>>index;
+                        editDataFaculty(faculties, index);
+                        break;
+                    case 2:
+                        printStudent(students, INDEX[1]);
+                        cout<<"Enter number: ";
+                        cin>>index;
+                        editDataStudent(students, index);
+                        break;
+                    default:
+                        cout<<"Incorrect choice";
+                        break;
                 }
                 break;
 
             case 3:
+                system("cls");
+                cout<<"0. Go Back."<<endl;    
                 cout<<"1. Delete Faculty Data."<<endl;    
                 cout<<"2. Delete Student Data."<<endl;    
                 cin>>subChoice;
-                if(subChoice == 1){
-                    cout<<"Enter number: ";
-                    cin>>index;
-                    removeData(faculties, index);
-                }else if(subChoice == 2){
-                    cout<<"Enter number: ";
-                    cin>>index;
-                    removeData(students, index);
-                }else{
-                    cout<<"Incorrect choice.";
+                switch(subChoice){
+                    case 0:
+                        break;
+                    case 1:
+                        printFaculty(faculties, INDEX[0]);
+                        cout<<"Enter number: ";
+                        cin>>index;
+                        removeData(faculties, index);
+                        break;
+                    case 2:
+                        printStudent(students, INDEX[1]);
+                        cout<<"Enter number: ";
+                        cin>>index;
+                        removeData(students, index);
+                        break;
+                    default:
+                        cout<<"Incorrect choice";
+                        break;
                 }
                 break;
 
             case 4:
+                system("cls");
+                cout<<"0. Go Back."<<endl;    
                 cout<<"1. Print Faculty Data."<<endl;    
                 cout<<"2. Print Student Data."<<endl;    
                 cin>>subChoice;
-                if(subChoice == 1){
-                    printFaculty(faculties, INDEX[0]);
-                }else if(subChoice == 2){
-                    printStudent(students, INDEX[1]);
-                }else{
-                    cout<<"Incorrect choice.";
+                system("cls");
+                switch(subChoice){
+                    case 0:
+                        break;
+                    case 1:
+                        printFaculty(faculties, INDEX[0]);
+                        break;
+                    case 2:
+                        printStudent(students, INDEX[1]);
+                        break;
+                    default:
+                        cout<<"Incorrect choice";
+                        break;
                 }
                 break;
 
             case 5:
+                system("cls");
+                cout<<"0. Go Back."<<endl;    
                 cout<<"1. Search Faculty Data."<<endl;    
                 cout<<"2. Search Student Data."<<endl;    
                 cin>>subChoice;
-                if(subChoice == 1){
-                    searchData(faculties);
-                }else if(subChoice == 2){
-                    searchData(students);
-                }else{
-                    cout<<"Incorrect choice.";
+                switch(subChoice){
+                    case 0:
+                        break;
+                    case 1:
+                        searchData(faculties);
+                        break;
+                    case 2:
+                        searchData(students);
+                    default:
+                        cout<<"Incorrect choice";
+                        break;
                 }
                 break;
 
@@ -198,11 +245,7 @@ void construct(Student students[], Faculty faculties[]){
 }
 
 void deconstruct(Student students[], Faculty faculties[]){
-    // I don't think this is nessecary since we already sort when data inputed.
-    // Sorting the names before saving
-    //sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
-    //sort(students, students + INDEX[1], compareTwoNamesStu);
-
+    // Sorting not nessecarry since data will already be sorted.
     // Save data to students file
     ofstream stuFile(STU_FILE, ios::binary | ios::trunc);
     for(int i = 0; i < INDEX[1]; ++i){
@@ -226,8 +269,8 @@ void deconstruct(Student students[], Faculty faculties[]){
 
 }
 
-
 void insertDataFaculty(Faculty faculties[]){
+    system("cls");
     int n;
     int index = INDEX[0]; 
     cout<<"How many peole would you like to record"<<endl;
@@ -252,6 +295,7 @@ void insertDataFaculty(Faculty faculties[]){
 }
 
 void insertDataStudent(Student students[]){
+    system("cls");
     int n;
     int index = INDEX[1]; 
     cout<<"How many peole would you like to record"<<endl;
@@ -270,7 +314,7 @@ void insertDataStudent(Student students[]){
         cin>>students[i].section;
         cout<<"Address: "<<endl;
         students[i].address = inputAddress();
-        cout<<"Date of Employment: "<<endl;
+        cout<<"Date of Addmisson: "<<endl;
         students[i].admission = inputDate();
     }
     sort(students, students + INDEX[1], compareTwoNamesStu);
@@ -303,52 +347,67 @@ Address inputAddress(){
 }
 
 void removeData(Faculty faculties[] ,int index){
-    for(int i = index; i < INDEX[0]; ++i){
-        faculties[i] = faculties[i + 1];
-    }
-    INDEX[0]--;
+    system("cls");
+    if(index > 0){
+        index--;
+        for(int i = index; i < INDEX[0]; ++i){
+            faculties[i] = faculties[i + 1];
+        }
+        INDEX[0]--;
+    }    
 }
 
 void removeData(Student students[] ,int index){
-    for(int i = index; i < INDEX[1]; ++i){
-        students[i] = students[i + 1];
-    }
-    INDEX[1]--;
+    system("cls");
+    if(index > 0){
+        index--;
+        for(int i = index; i < INDEX[1]; ++i){
+            students[i] = students[i + 1];
+        }
+        INDEX[1]--;
+    }    
 }
 
 void editDataFaculty(Faculty faculties[] ,int index){
-    index--;
-    cout<<"New First Name: ";
-    cin>>faculties[index].firstName;
-    cout<<"New Last Name: ";
-    cin>>faculties[index].lastName;
-    cout<<"New Job Desc: ";
-    cin>>faculties[index].job;
-    cout<<"New Age: ";
-    cin>>faculties[index].age;
-    cout<<"New Address: "<<endl;
-    faculties[index].address = inputAddress();
-    cout<<"New Date of Employment: "<<endl;
-    faculties[index].employmentDate = inputDate();
-    sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
+    system("cls");
+    if(index > 0){
+        index--;
+        cout<<"New First Name: ";
+        cin>>faculties[index].firstName;
+        cout<<"New Last Name: ";
+        cin>>faculties[index].lastName;
+        cout<<"New Job Desc: ";
+        cin>>faculties[index].job;
+        cout<<"New Age: ";
+        cin>>faculties[index].age;
+        cout<<"New Address: "<<endl;
+        faculties[index].address = inputAddress();
+        cout<<"New Date of Employment: "<<endl;
+        faculties[index].employmentDate = inputDate();
+        sort(faculties, faculties + INDEX[0], compareTwoNamesFac);
+    }
 }
 
 void editDataStudent(Student students[] ,int index){
-    cout<<"New First Name: ";
-    cin>>students[index].firstName;
-    cout<<"New Last Name: ";
-    cin>>students[index].lastName;
-    cout<<"New Age: ";
-    cin>>students[index].age;
-    cout<<"New Grade: ";
-    cin>>students[index].grade;
-    cout<<"New Section: ";
-    cin>>students[index].section;
-    cout<<"New Address: "<<endl;
-    students[index].address = inputAddress();
-    cout<<"New Date of Employment: "<<endl;
-    students[index].admission = inputDate();
-    sort(students, students + INDEX[1], compareTwoNamesStu);
+    system("cls");
+    if(index > 0){
+        index--;
+        cout<<"New First Name: ";
+        cin>>students[index].firstName;
+        cout<<"New Last Name: ";
+        cin>>students[index].lastName;
+        cout<<"New Age: ";
+        cin>>students[index].age;
+        cout<<"New Grade: ";
+        cin>>students[index].grade;
+        cout<<"New Section: ";
+        cin>>students[index].section;
+        cout<<"New Address: "<<endl;
+        students[index].address = inputAddress();
+        cout<<"New Date of Employment: "<<endl;
+        students[index].admission = inputDate();
+        sort(students, students + INDEX[1], compareTwoNamesStu);
+    }
 }
 
 void printFaculty(Faculty faculties[], int index){ 
