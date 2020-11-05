@@ -1,3 +1,6 @@
+// TODO: Make the date input function better 
+// TODO: Make the UI better
+
 // Imports 
 #include <iostream>
 #include <fstream>
@@ -9,6 +12,7 @@
 using namespace std;
 // The sort function from algorithm take 3 parameters a fucntion that return true or false
 // based on the comparing mechnaism and the list and the end of the list.
+
 // Constants
 const int MAX_REC = 500;
 const char * STU_FILE = "students.bin";
@@ -320,6 +324,7 @@ void insertDataStudent(Student students[]){
     sort(students, students + INDEX[1], compareTwoNamesStu);
 }
 
+// Didn't use complex logic for date since the project is on fucntions and files
 Date inputDate(){
     Date day;
     do{
