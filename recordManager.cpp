@@ -288,11 +288,11 @@ void insertFacultyRecord(Faculty faculties[]){
         cout<<"+-------------------------------------------------------+"<<endl;
         cout<<"| First Name => ";cin>>faculties[i].firstName;
         cout<<"+-------------------------------------------------------+"<<endl;
-        cout<<"| Last Name => ";cin>>faculties[i].lastName;
+        cout<<"| Last Name  => ";cin>>faculties[i].lastName;
         cout<<"+-------------------------------------------------------+"<<endl;
-        cout<<"| Job Desc => ";cin>>faculties[i].job;
+        cout<<"| Job Desc   => ";cin>>faculties[i].job;
         cout<<"+-------------------------------------------------------+"<<endl;
-        cout<<"| Age => ";cin>>faculties[i].age;
+        cout<<"| Age        => ";cin>>faculties[i].age;
         cout<<"+-------------------------------------------------------+"<<endl;
         // Address input
         faculties[i].address = inputAddress();
