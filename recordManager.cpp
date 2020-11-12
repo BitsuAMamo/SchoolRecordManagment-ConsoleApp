@@ -24,8 +24,8 @@ struct Address{
     char woreda[3], city[3], houseNum[4];
 };
 struct Student{
-    char firstName[20], lastName[20];
-    int age,grade;
+    char firstName[20], lastName[20], grade[3];
+    int age;
     char section[3];
     Address address;
     Date admission;
@@ -346,7 +346,7 @@ void insertStudentRecord(Student students[]){
 Date inputDate(){
     Date day;
     do{
-        cout<<"| Date(dd mm yyy) => ";
+        cout<<"| Date(dd mm yyyy) => ";
         cin>>day.day>>day.month>>day.year;
     }while((day.day < 1 || day.day > 30) || (day.month < 1 || day.month > 12));
 
@@ -442,7 +442,7 @@ void editStudentRecord(Student students[] ,int index){
 }
 
 void printFacultyRecords(Faculty faculties[], int index){ 
-    if(index != 0){
+    if(index > 0){
         string name;
         cout<<"+-----------------------------------------------------------------------------------------------+"<<endl;
         cout<<"|"<<setw(4)<<"no. "<<"|"<<setw(42)<<left<<"name"<<"|"<<setw(3)<<"age"<<"|"<<setw(10)<<"job desc"<<"|"
@@ -469,7 +469,7 @@ void printFacultyRecords(Faculty faculties[], int index){
 }
 
 void printStudentRecords(Student students[], int index){
-    if(index != 0){
+    if(index > 0){
         string name;
         cout<<"+----------------------------------------------------------------------------------------------+"<<endl;
         cout<<"|"<<setw(4)<<"No. "<<"|"<<setw(42)<<left<<"Name"<<"|"<<setw(3)<<"Age"<<"|"<<setw(5)<<"Grade"<<"|"<<setw(3)<<"Sec"<<"|"
@@ -504,9 +504,8 @@ void printAddress(Address address){
     cout<<setw(9)<<address.houseNum<<"|"<<setw(6)<<address.woreda<<"|"<<setw(4)<<address.city<<"|";
 }
 
-void searchRecords(Student students[]){
-    Student results[MAX_REC];
-    int counter  = 0, choice, target_grade;
+void searchRecords(Student students[]){ Student results[MAX_REC];
+    int counter  = 0, choice;
     char target_char[20];
     cout<<"+----+-------------------+"<<endl;
     cout<<"| 1. | Search by name.   |"<<endl;
@@ -529,9 +528,9 @@ void searchRecords(Student students[]){
             break;
         case 2:
             cout<<"| Enter Grade => ";
-            cin>>target_grade;
+            cin>>target_char;
             for(int i = 0; i < INDEX[1];++i){
-                if(target_grade == students[i].grade){
+                if(!strcmpi(target_char, students[i].grade) || !strcmpi(target_char, students[i].grade)){
                     results[counter] = students[i];
                     counter++;
                 }
