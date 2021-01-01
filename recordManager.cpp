@@ -1,3 +1,23 @@
+/*
+ -----------------GROUP MEMEBRS--------------------
+ NO. ------NAME-------------SECTION---------CODE---
+ 1. BITSU ALEMAYEHU MAMO | DRB 2001 A  |   JA 6711
+ 2. ROBEL EPHREM SHIFERAW| DRB 2001 B  |   DA 9202
+ 3. Abdellah ILIYAS AWOL | DRB 2001 A  |   EH 3182
+
+
+ ------------------NAME: SCHOOL RECORD MANAGMENT SYSTEM---------------------
+ ------------------------------DESCRIPTION----------------------------------
+ This program takes an input of student and factulty records and persistently
+ saves the data in a binary file. Using the data provided it can search, prin
+ t, remove, edit and insert records. In addittion to reciving records it sort
+ s them in alphabetical order. Most of the cosole output is done in a user fr
+ iendly way.
+
+*/ 
+
+//USED !strcmpi IN IF STATMENTS SINCE IT RETURN 0 IF TWO STRINGS ARE EQUAL
+
 // Imports 
 #include <iostream>
 #include <fstream>
@@ -7,7 +27,6 @@
 #include <stdlib.h>
 
 using namespace std;
-// The sort function from algorithm take 3 parameters(the list, end of the list, function[bool based on comparison])
 
 // Constants and Global Variables
 const int MAX_REC = 500;
@@ -16,7 +35,7 @@ const char * FAC_FILE = "faculty.bin";
 const char * INDEX_FILE = "index.bin";
 int INDEX[2] = {0,0};
 
-// Structures for needed data
+// Structures for records  
 struct Date{
     int day,month,year;
 };
@@ -36,6 +55,9 @@ struct Faculty{
     Address address;
     Date employmentDate;
 };
+
+// The sort function from algorithm take 3 parameters(the list, end of the list
+// , function[bool based on comparison])
 
 // Function prototypes
 // The start and end function where the files are loaded and saved
@@ -59,7 +81,7 @@ void searchRecords(Student students[]);
 void searchRecords(Faculty faculties[]);
 
 // Printing of data
-// Alothough INDEX is global we need a local on to use the function for other functions 
+// Need local index value to use the function everywhere
 void printFacultyRecords(Faculty faculties[], int index);
 void printStudentRecords(Student students[], int index);
 void printDate(Date day);
@@ -68,6 +90,7 @@ void printAddress(Address address);
 // Printing of Menu (To make code cleaner)
 void mainMenu();
 void subMenu(int n);
+void incorrectChoice();
 
 // Comparator function for sorting 
 // Can't overload or template 
@@ -102,9 +125,7 @@ int main(){
                         insertStudentRecord(students);
                         break;
                     default:
-                        cout<<"+------------------+"<<endl;
-                        cout<<"| Incorrect choice |"<<endl;
-                        cout<<"+------------------+";
+                        incorrectChoice();
                         break;
                 }
                 break;
@@ -129,9 +150,7 @@ int main(){
                         editStudentRecord(students, index);
                         break;
                     default:
-                        cout<<"+------------------+"<<endl;
-                        cout<<"| Incorrect choice |"<<endl;
-                        cout<<"+------------------+";
+                        incorrectChoice();
                         break;
                 }
                 break;
@@ -156,9 +175,7 @@ int main(){
                         removeRecord(students, index);
                         break;
                     default:
-                        cout<<"+------------------+"<<endl;
-                        cout<<"| Incorrect choice |"<<endl;
-                        cout<<"+------------------+";
+                        incorrectChoice();
                         break;
                 }
                 break;
@@ -178,9 +195,7 @@ int main(){
                         printStudentRecords(students, INDEX[1]);
                         break;
                     default:
-                        cout<<"+------------------+"<<endl;
-                        cout<<"| Incorrect choice |"<<endl;
-                        cout<<"+------------------+";
+                        incorrectChoice();
                         break;
                 }
                 break;
@@ -198,14 +213,14 @@ int main(){
                     case 2:
                         searchRecords(students);
                     default:
-                        cout<<"+------------------+"<<endl;
-                        cout<<"| Incorrect choice |"<<endl;
-                        cout<<"+------------------+";
+                        incorrectChoice();
                         break;
                 }
                 break;
 
             default:
+                if(!(choice >= 1 && choice <= 5))
+                    incorrectChoice();
                 break;
         }
     }while(choice != 0 && choice >= 1 && choice <= 5);
@@ -504,7 +519,9 @@ void printAddress(Address address){
     cout<<setw(9)<<address.houseNum<<"|"<<setw(6)<<address.woreda<<"|"<<setw(4)<<address.city<<"|";
 }
 
-void searchRecords(Student students[]){ Student results[MAX_REC];
+void searchRecords(Student students[]){
+    // Counter needed for the print function 
+    Student results[MAX_REC];
     int counter  = 0, choice;
     char target_char[20];
     cout<<"+----+-------------------+"<<endl;
@@ -551,6 +568,7 @@ void searchRecords(Student students[]){ Student results[MAX_REC];
 }
 
 void searchRecords(Faculty faculties[]){
+    // Counter needed for the print function 
     Faculty results[MAX_REC];
     int counter  = 0, choice;
     char target_char[20];
@@ -564,7 +582,7 @@ void searchRecords(Faculty faculties[]){
         case 1:
             cout<<"| Enter Name => ";
             cin>>target_char;
-            for(int i = 0; i < INDEX[1];++i){
+            for(int i = 0; i < INDEX[0];++i){
                 if(!strcmpi(target_char, faculties[i].firstName) || !strcmpi(target_char, faculties[i].lastName)){
                     results[counter] = faculties[i];
                     counter++;
@@ -574,7 +592,7 @@ void searchRecords(Faculty faculties[]){
         case 2:
             cout<<"| Enter Job => ";
             cin>>target_char;
-            for(int i = 0; i < INDEX[1];++i){
+            for(int i = 0; i < INDEX[0];++i){
                 if(!strcmpi(target_char, faculties[i].job)){
                     results[counter] = faculties[i];
                     counter++;
@@ -612,6 +630,12 @@ void mainMenu(){
     cout<<setw(22)<<"| 5. | Search Record "<<"|"<<endl;
     cout<<setw(22)<<"+----+----------------+"<<endl;
     cout<<setw(12)<<"| Input =>  ";
+
+}
+void incorrectChoice(){
+    cout<<"+------------------+"<<endl;
+    cout<<"| Incorrect choice |"<<endl;
+    cout<<"+------------------+";
 
 }
 
