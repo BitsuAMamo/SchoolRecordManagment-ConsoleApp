@@ -1,20 +1,16 @@
 /*
- -----------------GROUP MEMEBRS--------------------
- NO. ------NAME-------------SECTION---------CODE---
- 1. BITSU ALEMAYEHU MAMO | DRB 2001 A  |   JA 6711
- 2. ROBEL EPHREM SHIFERAW| DRB 2001 B  |   DA 9202
- 3. Abdellah ILIYAS AWOL | DRB 2001 A  |   EH 3182
-
-
  ------------------NAME: SCHOOL RECORD MANAGMENT SYSTEM---------------------
  ------------------------------DESCRIPTION----------------------------------
- This program takes an input of student and factulty records and persistently
- saves the data in a binary file. Using the data provided it can search, prin
+ This program takes an input of student or factulty record and persistently
+ saves the data into a binary file. Using the data provided it can search, prin
  t, remove, edit and insert records. In addittion to reciving records it sort
  s them in alphabetical order. Most of the cosole output is done in a user fr
- iendly way.
+ iendly way. It load the saved files when the program starts and saves the data
+ when the program is closed.
 
 */
+
+//------------------CODE STARTS AFTER THIS---------------------------------
 
 // USED !strcmpi IN IF STATMENTS SINCE IT RETURN 0 IF TWO STRINGS ARE EQUAL
 
